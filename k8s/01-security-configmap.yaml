@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-security-config
+  namespace: practica-s12
+data:
+  nginx.conf: |
+    pid /tmp/nginx.pid;
+    worker_processes auto;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+        access_log /dev/stdout;
+        error_log /dev/stderr notice;
+        sendfile on;
+
+        server {
+            listen 8080;
+            server_name _;
+
+            location = /health {
+                default_type text/plain;
+                return 200 "OK\n";
+            }
+
+            location / {
+                root /usr/share/nginx/html;
+                index index.html;
+                try_files $uri $uri/ =404;
+            }
+        }
+    }
+  index.html: |
+    <!doctype html>
+    <html lang="es">
+      <head><meta charset="utf-8"><title>Practica S12</title></head>
+      <body>
+        <h1>Aplicacion desplegada en Kubernetes</h1>
+        <p>Estado: operativa</p>
+      </body>
+    </html>

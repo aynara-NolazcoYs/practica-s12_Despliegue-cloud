@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+  namespace: practica-s12
+  labels:
+    app: app-practica
+spec:
+  type: LoadBalancer
+  selector:
+    app: app-practica
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
